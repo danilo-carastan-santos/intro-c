@@ -8,34 +8,46 @@ int main(int argc, char** argv){
   //max 10000;
   int n = atoi(argv[1]);  
   
-  printf("Alocando memoria para matriz s_matriz.\n");
-  int s_matriz[n][n];
-  printf("Alocacao da s_matriz feita com sucesso!\n");  
+  //printf("Statically allocating memory for vector s_matrix.\n");
+  //int s_matrix[n][n];
+  //printf("Done allocating memory for s_matrix!\n");  
 
-  printf("Alocando ponteiro bidimensional h_matriz.\n");
-  int** h_matriz = (int**) malloc(n * sizeof(int*));
+  printf("Dynamically allocating memory for matrix h_matrix.\n");
+  /*
+  A matrix in C can be seen as a vector of vectors, that is, a pointer of pointers
+  h_matrix is a vector which each positon will contain a memory address of a row
+  of the matrix
+  */
+  int** h_matrix = (int**) malloc(n * sizeof(int*));
+  //So far each row is empty (not allocated)
+  //Now we need to allocate memory for each row
   int i, j;
   for(i = 0; i < n; i++){
-    h_matriz[i] = (int*) malloc(n * sizeof(int));
+    h_matrix[i] = (int*) malloc(n * sizeof(int));
   }
-  printf("Alocacao da h_matriz feita com sucesso!\n");
+  printf("Done allocating memory for h_matrix!\n");
 
+  //Here i am filling h_matrix with some data, nothing special
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
-      h_matriz[i][j] = i / 4; 
+      h_matrix[i][j] = i / 4; 
     }
   } 
    
-  printf("Imprimindo h_matriz inteira.\n");
+  printf("Printing the whole matrix.\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
-      printf("%d ", h_matriz[i][j]);
+      printf("%d ", h_matrix[i][j]);
     }
   printf("\n");
   }
   
-  printf("Imprimindo apenas um pedaco de h_matriz.\n");
-  int** start_point = &h_matriz[0]; 
+  /*
+  Similar with vectors, we can play with memory addresses
+  here i am getting the memory address of the row with position 5
+  */
+  printf("Printing only a part of h_matrix.\n");
+  int** start_point = &h_matrix[5]; 
  
   for(i = 0; i < n/4; i++){
     for(j = 0; j < n; j++){
@@ -44,25 +56,30 @@ int main(int argc, char** argv){
   printf("\n");
   }
   
-  printf("\"Achatando\" h_matriz em um ponteiro unidimensional f_matriz.\n");
-  int* f_matriz = (int*) malloc(n * n * sizeof(int));
+
+/*
+//Here i am using a vector in the same way as a matrix.
+//It is a little more complicated. Uncomment lines 60 and 92
+//if you feel like understanding how it works
+  printf("\"Flattening\" h_matrix into a single vector f_matrix.\n");
+  int* f_matrix = (int*) malloc(n * n * sizeof(int));
 
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
-      f_matriz[i * n + j] = i / 4; 
+      f_matrix[i * n + j] = i / 4; 
     }
   }
 
-  printf("Imprimindo f_matriz.\n");
+  printf("Printing f_matrix.\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
-      printf("%d ", f_matriz[i * n + j]);
+      printf("%d ", f_matrix[i * n + j]);
     }
   printf("\n");
   }
 
-  printf("Imprimindo apenas um pedaco de f_matriz.\n");
-  int* _start_point = &f_matriz[0 * n]; 
+  printf("Printing only a part of f_matrix.\n");
+  int* _start_point = &f_matrix[0 * n]; 
  
   for(i = 0; i < n/4; i++){
     for(j = 0; j < n; j++){
@@ -71,15 +88,16 @@ int main(int argc, char** argv){
   printf("\n");
   }
 
-  for(i = 0; i < n; i++){
-    free(h_matriz[i]);
-  }
-  free(h_matriz);
+  free(f_matrix);
+*/
 
-  free(f_matriz);
+
+//Freeing a matrix is more complicated. First we need to free each row
+  for(i = 0; i < n; i++){
+    free(h_matrix[i]);
+  }
+//And then finally the whole matrix
+  free(h_matrix); 
 
   return 0;  
 }
-
-
-
